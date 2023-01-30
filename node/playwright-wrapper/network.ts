@@ -117,11 +117,14 @@ export async function waitForDownload(request: pb.Request.FilePath, page: Page):
     const saveAs = request.getPath();
     const downloadObject = await page.waitForEvent('download');
 
+	let path;
     if (saveAs) {
         await downloadObject.saveAs(saveAs);
-    }
-    const path = await downloadObject.path();
-    const fileName = downloadObject.suggestedFilename();
+		path = saveAs;
+    } else {
+		path = await downloadObject.path();
+	}
+	const fileName = downloadObject.suggestedFilename();
     logger.info('suggestedFilename: ' + fileName + ' saveAs path: ' + path);
     return jsonResponse(
         JSON.stringify({ saveAs: path, suggestedFilename: fileName }),
