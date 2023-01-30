@@ -122,7 +122,7 @@ export async function waitForDownload(request: pb.Request.FilePath, page: Page):
     let filePath;
     if (saveAs) {
         await downloadObject.saveAs(saveAs);
-        filePath = path.relative(process.env.PWD || '', saveAs);
+        filePath = path.resolve(saveAs);
     } else {
         filePath = await downloadObject.path();
     }
