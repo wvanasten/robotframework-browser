@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import * as path from 'path';
 import * as pb from './generated/playwright_pb';
+import * as process from 'process';
 import { Page } from 'playwright';
 
 import { emptyWithLog, jsonResponse, stringResponse } from './response-util';
@@ -117,17 +119,17 @@ export async function waitForDownload(request: pb.Request.FilePath, page: Page):
     const saveAs = request.getPath();
     const downloadObject = await page.waitForEvent('download');
 
-	let path;
+    let filePath;
     if (saveAs) {
         await downloadObject.saveAs(saveAs);
-		path = saveAs;
+        filePath = path.relative(process.env.PWD || '', saveAs);
     } else {
-		path = await downloadObject.path();
-	}
-	const fileName = downloadObject.suggestedFilename();
-    logger.info('suggestedFilename: ' + fileName + ' saveAs path: ' + path);
+        filePath = await downloadObject.path();
+    }
+    const fileName = downloadObject.suggestedFilename();
+    logger.info('suggestedFilename: ' + fileName + ' saveAs path: ' + filePath);
     return jsonResponse(
-        JSON.stringify({ saveAs: path, suggestedFilename: fileName }),
-        'Download done successfully to: ' + path,
+        JSON.stringify({ saveAs: filePath, suggestedFilename: fileName }),
+        'Download done successfully to: ' + filePath,
     );
 }
