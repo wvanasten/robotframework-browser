@@ -14,7 +14,6 @@
 
 import * as path from 'path';
 import * as pb from './generated/playwright_pb';
-import * as process from 'process';
 import { Page } from 'playwright';
 
 import { emptyWithLog, jsonResponse, stringResponse } from './response-util';
